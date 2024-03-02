@@ -5,3 +5,5 @@ public/
 .gitignore
 .husky/
 venv/
+api/
+requirements.txt
