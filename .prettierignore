@@ -4,6 +4,8 @@ coverage
 public/
 .gitignore
 .husky/
+.npmrc
+.idea/
 api/
 requirements.txt
 venv/
