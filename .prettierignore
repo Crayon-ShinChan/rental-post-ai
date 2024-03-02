@@ -4,3 +4,5 @@ coverage
 public/
 .gitignore
 .husky/
+.npmrc
+.idea/
