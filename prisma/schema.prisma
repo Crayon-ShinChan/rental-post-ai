@@ -6,15 +6,212 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
-  @@index([name])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String           @id @default(cuid())
+  name          String?
+  email         String?          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  properties    property[]
+  likes         liked_property[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model property {
+  property_id          String        @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at           DateTime      @default(now()) @db.Timestamptz(6)
+  landlord_id          String?
+  property_type        property_type
+  ad_source            ad_source
+  original_url         String?       @db.Text
+  title                String?       @db.Text
+  time_posted          DateTime?     @db.Timestamptz(6)
+  time_updated         DateTime?     @db.Timestamptz(6)
+  bathroom             Float?
+  bedroom              Int?
+  price                Int?
+  address              String?
+  city                 String
+  state                String
+  country              String
+  description          String
+  original_description String?
+  parking              Int?          @default(0) @db.SmallInt
+  is_furnished         Boolean?
+  rental_form          rental_form
+  availability_date    DateTime?     @db.Date
+  contact_name         String?
+  preferred_languages  String[]
+  email                String?
+  we_chat              String?
+  phone_number         String?
+  lease_terms          Int?
+  pet_allowed          Boolean?
+  source_id            String        @unique
+
+  // utilities:
+  water    Boolean?
+  hydro    Boolean?
+  heat     Boolean?
+  internet Boolean?
+
+  // amenities:
+  air_conditioning Boolean?
+  gym              Boolean?
+  pool             Boolean?
+  dishwasher       Boolean?
+  EV_charging      Boolean?
+  storage          Boolean?
+  balcony          Boolean?
+  in_suite_laundry Boolean?
+
+  property_translation property_translation[]
+  property_geolocation property_geolocation?
+  likes                liked_property[]
+
+  // reference to geography table
+  landlord User? @relation(fields: [landlord_id], references: [id], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model language {
+  language_id          Int                    @id @default(autoincrement())
+  language_name        String
+  property_translation property_translation[]
+  geography            geography[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model property_translation {
+  property_id String  @db.Uuid
+  language_id Int
+  title       String?
+  description String?
+
+  property property @relation(fields: [property_id], references: [property_id])
+  language language @relation(fields: [language_id], references: [language_id])
+
+  @@id([property_id, language_id])
+}
+
+model geography {
+  language_id        Int
+  city               String
+  state              String
+  country            String
+  translated_city    String
+  translated_state   String
+  translated_country String
+
+  language language @relation(fields: [language_id], references: [language_id])
+
+  // @@unique([city, state, country])
+  @@id([language_id, city, state, country])
+}
+
+model property_geolocation {
+  property_id      String  @unique @db.Uuid
+  latitude         Float
+  longitude        Float
+  address          String
+  original_address String
+  city             String
+  state            String
+  country          String
+  postal_code      String?
+  confidence       Int?
+
+  property property @relation(fields: [property_id], references: [property_id])
+
+  @@id([property_id])
+}
+
+model liked_property {
+  id          String   @id @default(cuid())
+  user_id     String
+  property_id String   @db.Uuid
+  created_at  DateTime @default(now())
+
+  user     User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  property property @relation(fields: [property_id], references: [property_id], onDelete: Cascade)
+
+  @@unique([user_id, property_id])
+}
+
+enum property_type {
+  apartment
+  house
+  townhouse
+  condo
+  basement
+  studio
+  loft
+  duplex
+  triplex
+  penthouse
+  laneway
+  dorm
+  other
+}
+
+enum ad_source {
+  vanpeople
+  vansky
+  craigslist
+  pulrent
+  other
+}
+
+enum rental_form {
+  month_to_month
+  fixed_term
+  short_term
+  long_term
+  room_rental
+  student_housing
+  shared_living
+  sublet
+  other
 }
