@@ -6,17 +6,17 @@ await import("./src/env.js");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // rewrites: async () => {
-  //   return [
-  //     {
-  //       source: "/py-api/:path*",
-  //       destination:
-  //         process.env.NODE_ENV === "development"
-  //           ? "http://127.0.0.1:8000/py-api/:path*"
-  //           : "https://rental-post-ai.vercel.app/py-api/:path*",
-  //     },
-  //   ];
-  // },
+  rewrites: async () => {
+    return [
+      {
+        source: "/py-api/:path*",
+        destination:
+          process.env.NODE_ENV === "development"
+            ? "http://127.0.0.1:8000/py-api/:path*"
+            : "https://rental-post-ai.vercel.app/py-api/",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
