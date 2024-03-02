@@ -39,5 +39,5 @@
     ".next/types/**/*.ts",
     "commitlint.config.mjs"
   ],
-  "exclude": ["node_modules", "venv"]
+  "exclude": ["node_modules", "venv", "prisma/*"]
 }
