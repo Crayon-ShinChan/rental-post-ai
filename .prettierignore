@@ -6,4 +6,5 @@ public/
 .husky/
 venv/
 api/
+py-api/
 requirements.txt
