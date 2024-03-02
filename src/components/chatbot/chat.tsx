@@ -1,28 +1,55 @@
+"use client";
+
+import { useChat } from "ai/react";
+import { SendHorizontal } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { isMobile } from "react-device-detect";
+import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { LeftChatBubble, RightChatBubble } from "./components/chat-bubble";
 
-const messages = [
-  { role: "user", content: "Hello" },
-  { role: "bot", content: "Hello! How can I help you today?" },
-  { role: "user", content: "I need help with my account" },
-  {
-    role: "bot",
-    content: "Sure, I can help you with that. What do you need help with?",
-  },
-  { role: "user", content: "I need to reset my password" },
-  {
-    role: "bot",
-    content:
-      "I can help you with that. Please provide me with your email address.",
-  },
-];
+// const messages = [
+//   { role: "user", content: "Hello" },
+//   { role: "bot", content: "Hello! How can I help you today?" },
+//   { role: "user", content: "I need help with my account" },
+//   {
+//     role: "bot",
+//     content: "Sure, I can help you with that. What do you need help with?",
+//   },
+//   { role: "user", content: "I need to reset my password" },
+//   {
+//     role: "bot",
+//     content:
+//       "I can help you with that. Please provide me with your email address.",
+//   },
+// ];
 
 export default function Chat() {
+  const { messages, input, isLoading, handleInputChange, handleSubmit } =
+    useChat({
+      api: "next-api/chat",
+    });
+
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
   }, [messages]);
+
+  const submitRef = useRef<HTMLButtonElement>(null);
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" && !event.shiftKey && !isMobile) {
+      event.preventDefault(); // Prevents the default action of inserting a new line
+      submitRef.current?.click();
+    }
+  };
+
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // if (diary && !diary.chat_mode) {
+    //   setDiary({ ...diary, chat_mode: "normal" });
+    // }
+    handleSubmit(event);
+  };
 
   return (
     <div className="flex max-h-[calc(100dvh-8rem)] flex-col">
@@ -36,7 +63,7 @@ export default function Chat() {
         )}
         <div ref={messagesEndRef} />
       </div>
-      {/* <form className="flex items-center gap-3 p-4" onSubmit={handleFormSubmit}>
+      <form className="flex items-center gap-3 p-4" onSubmit={handleFormSubmit}>
         <Textarea
           autoSize
           value={input}
@@ -52,9 +79,9 @@ export default function Chat() {
           disabled={isLoading}
           ref={submitRef}
         >
-          <Icons.Send />
+          <SendHorizontal />
         </Button>
-      </form> */}
+      </form>
     </div>
   );
 }
