@@ -12,6 +12,7 @@ import {
   SelectSection,
   Textarea,
 } from "@nextui-org/react";
+import { ChatBot } from "@/components/chatbot";
 import { postAtom } from "@/lib/atoms";
 
 type Inputs = {
@@ -426,6 +427,7 @@ export default function RentalForm() {
           </Button>
         </div>
       </form>
+      <ChatBot />
     </div>
   );
 }

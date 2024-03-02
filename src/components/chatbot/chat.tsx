@@ -1,9 +1,11 @@
 "use client";
 
 import { useChat } from "ai/react";
+import { useAtomValue } from "jotai";
 import { SendHorizontal } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { isMobile } from "react-device-detect";
+import { postAtom } from "@/lib/atoms";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { LeftChatBubble, RightChatBubble } from "./components/chat-bubble";
@@ -25,10 +27,21 @@ import { LeftChatBubble, RightChatBubble } from "./components/chat-bubble";
 // ];
 
 export default function Chat() {
-  const { messages, input, isLoading, handleInputChange, handleSubmit } =
-    useChat({
-      api: "next-api/chat",
-    });
+  const fields = useAtomValue(postAtom);
+
+  const {
+    messages,
+    input,
+    isLoading,
+    handleInputChange,
+    handleSubmit,
+    setInput,
+  } = useChat({
+    api: "next-api/chat",
+    body: {
+      fields,
+    },
+  });
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -51,18 +64,35 @@ export default function Chat() {
     handleSubmit(event);
   };
 
+  const handleImprovePost = () => {
+    setInput("Improve description of my post");
+    submitRef.current?.click();
+  };
+
   return (
     <div className="flex max-h-[calc(100dvh-8rem)] flex-col">
-      <div className="flex flex-col gap-y-3 overflow-y-auto px-4 pt-3">
-        {messages.map((m, index) =>
-          m.role === "user" ? (
-            <RightChatBubble key={index}>{m.content}</RightChatBubble>
-          ) : (
-            <LeftChatBubble key={index}>{m.content}</LeftChatBubble>
-          ),
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+      {messages.length > 0 ? (
+        <div className="flex flex-col gap-y-3 overflow-y-auto px-4 pt-3">
+          {messages.map((m, index) =>
+            m.role === "user" ? (
+              <RightChatBubble key={index}>{m.content}</RightChatBubble>
+            ) : (
+              <LeftChatBubble key={index}>{m.content}</LeftChatBubble>
+            ),
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      ) : (
+        <div className="px-4 pt-3">
+          <Button
+            variant="outline"
+            className="rounded-xl"
+            onClick={handleImprovePost}
+          >
+            Improve description of my post
+          </Button>
+        </div>
+      )}
       <form className="flex items-center gap-3 p-4" onSubmit={handleFormSubmit}>
         <Textarea
           autoSize
