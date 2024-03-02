@@ -62,7 +62,7 @@ todo_id_counter = 1
 #     return {"message": "Todo item deleted"}
 
 
-@app.route("/py-api/healthchecker", methods=["GET"])
+@app.route("/api/healthchecker", methods=["GET"])
 def healthchecker():
     return {"status": "success", "message": "Integrate Flask Framework with Next.js"}
 
