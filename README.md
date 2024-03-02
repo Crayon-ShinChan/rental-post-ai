@@ -6,8 +6,11 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 
 1. Clone this repo to your local
 2. Start docker
-3. run `./start-database.sh`
-4. run `pnpm dev`
+3. rename `.env.example` to `.env`
+4. run `./start-database.sh`
+5. run `pnpm i`
+6. run `pnpm db:push`
+7. run `pnpm dev`
 
 ## What's next? How do I make an app with this?
 

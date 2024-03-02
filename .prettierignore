@@ -6,3 +6,7 @@ public/
 .husky/
 .npmrc
 .idea/
+api/
+requirements.txt
+venv/
+py-api/
