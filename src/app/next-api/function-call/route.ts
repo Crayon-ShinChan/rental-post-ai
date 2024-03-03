@@ -290,7 +290,7 @@ async function modelInvokeWithRetry(
   return undefined;
 }
 
-export async function buildPropertyFromDescription(
+async function buildPropertyFromDescription(
   userDescription: string,
 ): Promise<string | undefined> {
   const maxRetry = 5;
