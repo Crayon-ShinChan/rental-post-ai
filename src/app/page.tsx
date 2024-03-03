@@ -1,7 +1,7 @@
 "use client";
 
 import { useAtom } from "jotai";
-import React from "react";
+import React, { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import {
   Button,
@@ -48,6 +48,7 @@ export default function RentalForm() {
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const a = 1;
   };
+  const [fillForMe, setFillForMe] = useState<string>();
 
   React.useEffect(() => {
     setFocus("bathroom");
@@ -92,6 +93,20 @@ export default function RentalForm() {
       setFields((prevFields) => ({ ...prevFields, [field]: value }));
     };
 
+  const handleFillForMe = async () => {
+    const userDescription: string = fields.description;
+    const response = await fetch("/next-api/function-call", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ messages: userDescription }),
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const json = await response.text();
+    setFillForMe(json);
+    // console.log(response.json());
+  };
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = event.target;
     setFields((prevFields) => ({ ...prevFields, [name]: value }));
@@ -198,6 +213,12 @@ export default function RentalForm() {
             </div>
           </div>
         </div>
+        <div className="mx-auto flex">
+          <Button className="mx-auto my-2" onClick={handleFillForMe}>
+            Fill for Me
+          </Button>
+        </div>
+        <div>{fillForMe}</div>
 
         <div className="flex justify-between">
           <div className="w-1/4 p-2">

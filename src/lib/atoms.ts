@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-type Post = {
+export type Post = {
   bathroom: number;
   bedroom: number;
   parking: number;
