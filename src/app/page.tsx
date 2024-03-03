@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import { useAtom } from "jotai";
+import React from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import {
   Button,
@@ -11,6 +12,8 @@ import {
   SelectSection,
   Textarea,
 } from "@nextui-org/react";
+import { ChatBot } from "@/components/chatbot";
+import { postAtom } from "@/lib/atoms";
 
 type Inputs = {
   bathroom: number;
@@ -50,29 +53,33 @@ export default function RentalForm() {
     setFocus("bathroom");
   }, [setFocus]);
 
-  const [fields, setFields] = useState({
-    bathroom: "0",
-    bedroom: "0",
-    parking: "0",
-    lease_terms: "0",
-    rental_form: "",
-    property_type: "",
-    pet_allowed: false,
-    water: false,
-    hydro: false,
-    heat: false,
-    internet: false,
-    air_conditioning: false,
-    gym: false,
-    pool: false,
-    dishwasher: false,
-    EV_charging: false,
-    storage: false,
-    in_suite_laundry: false,
-    title: "",
-    address: "",
-    description: "",
-  });
+  const [fields, setFields] = useAtom(postAtom);
+
+  // console.log(fields);
+
+  // const [fields, setFields] = useState({
+  //   bathroom: "0",
+  //   bedroom: "0",
+  //   parking: "0",
+  //   lease_terms: "0",
+  //   rental_form: "",
+  //   property_type: "",
+  //   pet_allowed: false,
+  //   water: false,
+  //   hydro: false,
+  //   heat: false,
+  //   internet: false,
+  //   air_conditioning: false,
+  //   gym: false,
+  //   pool: false,
+  //   dishwasher: false,
+  //   EV_charging: false,
+  //   storage: false,
+  //   in_suite_laundry: false,
+  //   title: "",
+  //   address: "",
+  //   description: "",
+  // });
 
   const handleInputChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,6 +171,13 @@ export default function RentalForm() {
               <Textarea
                 label="Description"
                 placeholder="Enter your description"
+                value={fields.description}
+                onChange={(e) =>
+                  setFields((prevFields) => ({
+                    ...prevFields,
+                    description: e.target.value,
+                  }))
+                }
               />
             </div>
           </div>
@@ -173,8 +187,13 @@ export default function RentalForm() {
           <div className="w-1/4 p-2">
             <Input
               label="Bathroom"
-              value={fields.bathroom}
-              onChange={handleInputChange("bathroom")}
+              value={fields.bathroom.toString()}
+              onChange={(e) =>
+                setFields((prevFields) => ({
+                  ...prevFields,
+                  bathroom: Number(e.target.value),
+                }))
+              }
               placeholder="Bathroom"
               type="number"
               step="0.5"
@@ -185,8 +204,13 @@ export default function RentalForm() {
           <div className="w-1/4 p-2">
             <Input
               label="Bedroom"
-              value={fields.bedroom}
-              onChange={handleInputChange("bedroom")}
+              value={fields.bedroom.toString()}
+              onChange={(e) => {
+                setFields((prevFields) => ({
+                  ...prevFields,
+                  bedroom: Number(e.target.value),
+                }));
+              }}
               placeholder="Bedroom"
               type="number"
               step="1"
@@ -197,8 +221,13 @@ export default function RentalForm() {
           <div className="w-1/4 p-2">
             <Input
               label="Parking"
-              value={fields.parking}
-              onChange={handleInputChange("parking")}
+              value={fields.parking.toString()}
+              onChange={(e) => {
+                setFields((prevFields) => ({
+                  ...prevFields,
+                  parking: Number(e.target.value),
+                }));
+              }}
               placeholder="Parking"
               type="number"
               step="1"
@@ -209,8 +238,13 @@ export default function RentalForm() {
           <div className="w-1/4 p-2">
             <Input
               label="Lease Terms"
-              value={fields.lease_terms}
-              onChange={handleInputChange("lease_terms")}
+              value={fields.lease_terms.toString()}
+              onChange={(e) => {
+                setFields((prevFields) => ({
+                  ...prevFields,
+                  lease_terms: Number(e.target.value),
+                }));
+              }}
               placeholder="Lease Terms"
               type="number"
               step="1"
@@ -226,7 +260,12 @@ export default function RentalForm() {
               placeholder="Select Rental Form"
               style={{ flex: 1 }}
               value={fields.rental_form}
-              onChange={handleSelectChange}
+              onChange={(e) =>
+                setFields((prevFields) => ({
+                  ...prevFields,
+                  rental_form: e.target.value,
+                }))
+              }
             >
               <SelectSection>
                 {rentalOptions.map((option) => (
@@ -244,7 +283,12 @@ export default function RentalForm() {
               placeholder="Select Property Type"
               style={{ flex: 1 }}
               value={fields.property_type}
-              onChange={handleSelectChange}
+              onChange={(e) =>
+                setFields((prevFields) => ({
+                  ...prevFields,
+                  property_type: e.target.value,
+                }))
+              }
             >
               <SelectSection>
                 {propertyOptions.map((option) => (
@@ -257,7 +301,7 @@ export default function RentalForm() {
           </div>
         </div>
 
-        <div className="mt-28 md:mt-36">
+        <div className="mt-2">
           <div className="flex space-x-4">
             <div className="flex-1">
               <Checkbox
@@ -310,7 +354,7 @@ export default function RentalForm() {
           </div>
         </div>
 
-        <div className="mt-28 md:mt-36">
+        <div className="mt-2">
           <div className="flex space-x-4">
             <div className="flex-1">
               <Checkbox
@@ -363,7 +407,7 @@ export default function RentalForm() {
           </div>
         </div>
 
-        <div className="mt-28 flex justify-between">
+        <div className="mt-2 flex justify-between">
           <div className="flex-1 p-2">
             <div className="flex flex-col">
               <Input
@@ -377,12 +421,13 @@ export default function RentalForm() {
           </div>
         </div>
 
-        <div className="flex justify-end pt-28">
-          <Button size="md" color="primary" className="mt-8">
+        <div className="mt-2 flex justify-end">
+          <Button size="md" color="primary" className="">
             Post
           </Button>
         </div>
       </form>
+      <ChatBot />
     </div>
   );
 }
