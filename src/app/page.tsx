@@ -103,6 +103,22 @@ export default function RentalForm() {
       setFields((prevFields) => ({ ...prevFields, [field]: value }));
     };
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleEstimatePrice = async () => {
+    setIsLoading(true);
+
+    // wait for 2 seconds
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    setFields((prevFields) => ({
+      ...prevFields,
+      price: 1400,
+    }));
+
+    setIsLoading(false);
+  };
+
   const rentalOptions = [
     "room_rental",
     "fixed_term",
@@ -440,7 +456,16 @@ export default function RentalForm() {
           </div>
         </div>
 
-        <div className="mt-2 flex justify-end">
+        <div className="mt-2 flex justify-between">
+          <Button
+            size="md"
+            color="secondary"
+            className=""
+            onClick={handleEstimatePrice}
+            isLoading={isLoading}
+          >
+            Estimate Price
+          </Button>
           <Button size="md" color="primary" className="">
             Post
           </Button>
