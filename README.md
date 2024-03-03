@@ -2,6 +2,10 @@
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app` and modified to be used in Hackathon.
 
+## Architecture Diagram
+
+<img width="973" alt="Architecture_Diagram" src="https://github.com/Crayon-ShinChan/rental-post-ai/assets/81618041/046fcbc2-7c4c-4012-ac50-2181eead7814">
+
 ## How to start?
 
 1. Clone this repo to your local
