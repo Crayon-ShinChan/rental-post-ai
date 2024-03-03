@@ -22,6 +22,7 @@ type Post = {
   description: string;
   title: string;
   address: string;
+  price: number;
 };
 
 export const postAtom = atom<Post>({
@@ -46,4 +47,5 @@ export const postAtom = atom<Post>({
   description: "",
   title: "",
   address: "",
+  price: 0,
 });

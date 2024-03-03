@@ -421,6 +421,25 @@ export default function RentalForm() {
           </div>
         </div>
 
+        <div className="mt-2 flex justify-between">
+          <div className="flex-1 p-2">
+            <div className="flex flex-col">
+              <Input
+                type="text"
+                label="Price"
+                placeholder="Enter your price"
+                value={fields.price.toString()}
+                onChange={(e) =>
+                  setFields((prevFields) => ({
+                    ...prevFields,
+                    price: Number(e.target.value),
+                  }))
+                }
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="mt-2 flex justify-end">
           <Button size="md" color="primary" className="">
             Post
