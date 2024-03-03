@@ -23,14 +23,15 @@ export async function POST(req: Request) {
 
   const systemMessages = `You are an assistant helping a user to write a post for a rental property. The user has provided the following information:
   ${JSON.stringify(fields, null, 2)}
-  If user ask you to polish or improve their description field in the above post, you need to improve the description with the following guide:
-  \`\`\`
-  please summarize or paraphrase description field into polished, organized paragraphs. No more than 4 paragraphs.
-  Please retain all the information in the description, but feel free to reorganize the information in a more logical order.
-  Prioritize the information by importance, placing the most critical criteria at the beginning and less important details towards the end.
-  Include only the polished summary in your response. Here's the property description: \n\n{property_description}.
-  \`\`\`
   `;
+
+  // If user ask you to polish or improve their description field in the above post, you need to improve the description with the following guide:
+  // \`\`\`
+  // please summarize or paraphrase description field into polished, organized paragraphs. No more than 4 paragraphs.
+  // Please retain all the information in the description, but feel free to reorganize the information in a more logical order.
+  // Prioritize the information by importance, placing the most critical criteria at the beginning and less important details towards the end.
+  // Include only the polished summary in your response. Here's the property description: \n\n{property_description}.
+  // \`\`\`
 
   const fullMessages = [
     {
